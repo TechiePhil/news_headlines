@@ -41,69 +41,79 @@ class _UserHomeState extends State<UserHome> {
             itemBuilder: (context, index) {              
               var articleAuthor = snapshot.data.articles[index].author?? 'N/A';
               var publishDate = snapshot.data.articles[index].pubDate?? 'N/A';
-              
-              return Card(
-                child: Container(
-                  child: Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        // Title section
-                        Text(
-                          snapshot.data.articles[index].title,
-                          overflow: TextOverflow.ellipsis,
-                          softWrap: false,
-                          maxLines: 3,
-                        ),
-                        
-                        // Image and description widgets
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 5),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Container(
-                                height: 100,
-                                width: 100,
-                                color: Colors.blue
-                              ),
-                              SizedBox(width: 10),
-                              Container(
-                                child: Expanded(
-                                  child: Text(
-                                    snapshot.data.articles[index].description?? 
-                                    '- No Description! -'.toUpperCase(),
-                                    // overflow: TextOverflow.clip,
-                                    // maxLines: 10,
-                                  )
-                                )
-                              )
-                            ]
+              return InkWell(
+                child: Card(
+                  child: Container(
+                    child: Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          // Title section
+                          Text(
+                            snapshot.data.articles[index].title,
+                            overflow: TextOverflow.ellipsis,
+                            softWrap: false,
+                            maxLines: 3,
+                            style: TextStyle(
+                              fontStyle: FontStyle.italic
+                            )
                           ),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Column(
+                          
+                          // Image and description widgets
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 5),
+                            child: Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
-                                Text(
-                                  'Author: $articleAuthor',
-                                  overflow: TextOverflow.ellipsis,
+                                Container(
+                                  height: 90,
+                                  width: 90,
+                                  child: getNetworkImage(
+                                    snapshot.data.articles[index].imageUrl                                  
+                                  )
                                 ),
-                                // SizedBox(width: 5),
-                                Text(
-                                  'Published: $publishDate',
+                                SizedBox(width: 10),
+                                Container(
+                                  child: Expanded(
+                                    child: Text(
+                                      snapshot.data.articles[index].description?? 
+                                      '- No Description! -'.toUpperCase(),
+                                      // overflow: TextOverflow.clip,
+                                      // maxLines: 10,
+                                    )
+                                  ),
                                 )
                               ]
                             ),
-                          ],
-                        ),
-                      ]
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text(
+                                    'Author: $articleAuthor',
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  // SizedBox(width: 5),
+                                  Text(
+                                    'Published: $publishDate',
+                                  )
+                                ]
+                              ),
+                            ],
+                          ),
+                        ]
+                      ),
                     ),
-                  ),
-                )
+                  )
+                ),
+                onTap: () {
+                  // show a single article on a new route
+                  showNewsDetailsPage(snapshot.data.articles[index]);
+                }
               );
             }
           );
@@ -113,14 +123,50 @@ class _UserHomeState extends State<UserHome> {
         child: Icon(Icons.cloud_download),
         onPressed: () {
           newsHeadlines = Network.fetchData(url);
-          newsHeadlines.then((headlines) {
-            print('Total Articles Retrieved: ${headlines.totalResults}');
-            headlines.articles.forEach((article) {
-              print('Headline: ${article.title}');
-            });
-          }).timeout(Duration(seconds: 20));
+          // newsHeadlines.then((headlines) {
+          //   // print('Total Articles Retrieved: ${headlines.totalResults}');
+          //   headlines.articles.forEach((article) {
+          //     print('Image Url: ${article.imageUrl}');
+          //   });
+          // });
         }
       )
+    );
+  }
+  
+  // get then image from the network and display it. if image url is null,
+  // show image placeholder.
+  Widget getNetworkImage(String url) {
+    if (url != null) {
+      return Image.network(url, scale: 2);
+    }
+    return Container(
+      child: Icon(Icons.image_not_supported, size: 60)
+    );
+  }
+  
+  // on tap, show the full news of the tapped card widget
+  void showNewsDetailsPage(Articles article) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (BuildContext context) {
+          return ArticleDetailsPage(article);
+        }
+      )
+    );
+  }
+}
+
+// this widget will show the whole news article and it relevant details
+class ArticleDetailsPage extends StatelessWidget {
+  ArticleDetailsPage(this.article);
+  final Articles article;
+  
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      
     );
   }
 }

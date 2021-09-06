@@ -10,8 +10,8 @@ class NewsHeadlines {
     totalResults = json['totalResults'];
     if (json['articles'] != null) {
       articles = <Articles>[];
-      json['articles'].forEach((v) {
-        articles.add(new Articles.fromJson(v));
+      json['articles'].forEach((value) {
+        articles.add(new Articles.fromJson(value));
       });
     }
   }
@@ -56,7 +56,7 @@ class Articles {
     title = json['title'];
     description = json['description'];
     url = json['url'];
-    imageUrl = json['imageUrl'];
+    imageUrl = json['urlToImage']; // corrected from 'imageUrl' -> urlToImage!
     pubDate = json['pubDate'];
     content = json['content'];
   }
@@ -70,7 +70,7 @@ class Articles {
     data['title'] = this.title;
     data['description'] = this.description;
     data['url'] = this.url;
-    data['imageUrl'] = this.imageUrl;
+    data['urlToImage'] = this.imageUrl;
     data['pubDate'] = this.pubDate;
     data['content'] = this.content;
     return data;
