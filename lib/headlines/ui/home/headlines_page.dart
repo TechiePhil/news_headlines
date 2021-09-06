@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:headlines/headlines/model/news_headlines.dart';
 import 'package:headlines/headlines/network/network.dart';
 
+import 'article_details_page.dart';
+
 class UserHome extends StatefulWidget {
   @override
   _UserHomeState createState() => _UserHomeState();
@@ -154,19 +156,6 @@ class _UserHomeState extends State<UserHome> {
           return ArticleDetailsPage(article);
         }
       )
-    );
-  }
-}
-
-// this widget will show the whole news article and it relevant details
-class ArticleDetailsPage extends StatelessWidget {
-  ArticleDetailsPage(this.article);
-  final Articles article;
-  
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      
     );
   }
 }
