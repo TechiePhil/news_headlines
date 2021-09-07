@@ -30,7 +30,7 @@ class _UserHomeState extends State<UserHome> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Authentication'),
+        title: Text('News Headlines'),
       ),
       body: FutureBuilder(
         future: newsHeadlines,
@@ -57,8 +57,10 @@ class _UserHomeState extends State<UserHome> {
                             overflow: TextOverflow.ellipsis,
                             softWrap: false,
                             maxLines: 3,
+                            textAlign: TextAlign.justify,
                             style: TextStyle(
-                              fontStyle: FontStyle.italic
+                              // fontStyle: FontStyle.italic
+                              fontWeight: FontWeight.w600
                             )
                           ),
                           
@@ -81,6 +83,10 @@ class _UserHomeState extends State<UserHome> {
                                     child: Text(
                                       snapshot.data.articles[index].description?? 
                                       '- No Description! -'.toUpperCase(),
+                                      textAlign: TextAlign.justify,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w300
+                                      )
                                       // overflow: TextOverflow.clip,
                                       // maxLines: 10,
                                     )
@@ -143,7 +149,10 @@ class _UserHomeState extends State<UserHome> {
       return Image.network(url, scale: 2);
     }
     return Container(
-      child: Icon(Icons.image_not_supported, size: 60)
+      child: Icon(
+        Icons.image_not_supported, 
+        size: 60, 
+        color: Colors.blueGrey[200])
     );
   }
   
