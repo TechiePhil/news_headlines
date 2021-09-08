@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:headlines/headlines/ui/home/headlines_page.dart';
 
 class SignInWidget extends StatefulWidget {
   @override
@@ -7,12 +8,48 @@ class SignInWidget extends StatefulWidget {
 }
 
 class _SignInWidgetState extends State<SignInWidget> {
-  
+  final formKey = GlobalKey<FormState>();
   TextEditingController emailController;
   TextEditingController passwordController;
   
-  void validateAndSave() {
-    
+  bool validateAndSave() {
+    final form = formKey.currentState;
+    if (form.validate()) {
+      form.save();
+      return true;
+    }
+    return false;
+  }
+  
+  void validateAndSubmit() async {
+    if (validateAndSave()) {
+      try {
+        UserCredential user = await FirebaseAuth
+          .instance.signInWithEmailAndPassword(
+            email: emailController.text, 
+            password: passwordController.text
+        );
+        print('${user.user.uid}');
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return UserHome();
+            }
+          )
+        );
+      }
+      catch(error) {
+        print('Error: $error');
+      }
+    }
+  }
+  
+  @override
+  void initState() {
+    super.initState();
+    emailController = TextEditingController();
+    passwordController = TextEditingController();
   }
   
   @override
@@ -59,7 +96,7 @@ class _SignInWidgetState extends State<SignInWidget> {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 10),
               child: Container(
-                height: 300,
+                height: 350,
                 decoration: BoxDecoration(
                   color: Colors.blue,
                   borderRadius: BorderRadius.all(Radius.circular(10))
@@ -78,11 +115,13 @@ class _SignInWidgetState extends State<SignInWidget> {
                       Divider(thickness: 1, height: 30,),
                       
                       Form(
+                        key: formKey,
                         child: Column(
                           // crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: <Widget>[
                             TextFormField(
                               controller: emailController,
+                              autovalidateMode: AutovalidateMode.always,
                               keyboardType: TextInputType.emailAddress,
                               decoration: InputDecoration(
                                 prefixIcon: Icon(Icons.email_rounded),
@@ -93,7 +132,10 @@ class _SignInWidgetState extends State<SignInWidget> {
                               validator: (value) {
                                 return value.isEmpty ? 'Email address is missing.' :
                                   null;
-                              }
+                              },
+                              onSaved: (value) {
+                                emailController.text = value;
+                              },
                             ),
                             SizedBox(height: 20),
                             TextFormField(
@@ -111,7 +153,10 @@ class _SignInWidgetState extends State<SignInWidget> {
                               validator: (value) {
                                 return value.isEmpty ? 'Password is missing.' :
                                   null;
-                              }
+                              },
+                              onSaved: (value) {
+                                passwordController.text = value;
+                              },
                             ),
                             SizedBox(height: 10),
                             ElevatedButton(
@@ -134,7 +179,7 @@ class _SignInWidgetState extends State<SignInWidget> {
                                   EdgeInsets.all(10)
                                 )
                               ),
-                              onPressed: validateAndSave,
+                              onPressed: validateAndSubmit,
                             ),
                           ],
                         ),

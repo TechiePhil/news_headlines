@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:headlines/headlines/ui/home/headlines_page.dart';
 
 class SignUpWidget extends StatefulWidget {
   @override
@@ -7,10 +8,48 @@ class SignUpWidget extends StatefulWidget {
 }
 
 class _SignUpWidgetState extends State<SignUpWidget> {
-  
+  final formKey = GlobalKey<FormState>();
   TextEditingController emailController;
   TextEditingController passwordController;
-  TextEditingController verifyPasswordController;
+  
+  @override
+  void initState() {
+    super.initState();
+    emailController = TextEditingController();
+    passwordController = TextEditingController();
+  }
+  
+  bool validateAndSave() {
+    final form = formKey.currentState;
+    if (form.validate()) {
+      form.save();
+      return true;
+    }
+    return false;
+  }
+  
+  void validateAndSubmit() async {
+    if (validateAndSave()) {
+      try {
+        UserCredential user = await FirebaseAuth
+          .instance.createUserWithEmailAndPassword(
+            email: emailController.text, 
+            password: passwordController.text
+        );
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return UserHome();
+            }
+          )
+        );
+      }
+      catch(error) {
+        print('Error: $error');
+      }
+    }
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -19,7 +58,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
         child: Column(
           children: <Widget>[
             Container(
-              height: 160,
+              height: 120,
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
                 color: Colors.blueAccent,
@@ -56,7 +95,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 10),
               child: Container(
-                height: 380,
+                height: 350,
                 decoration: BoxDecoration(
                   color: Colors.blue,
                   borderRadius: BorderRadius.all(Radius.circular(10))
@@ -74,51 +113,78 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                       ),
                       Divider(thickness: 1, height: 30,),
                       
-                      Column(
-                        children: <Widget>[
-                          TextFormField(
-                            controller: emailController,
-                            keyboardType: TextInputType.emailAddress,
-                            decoration: InputDecoration(
-                              prefixIcon: Icon(Icons.email_rounded),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10)
-                              )
-                            )
-                          ),
-                          SizedBox(height: 20),
-                          TextFormField(
-                            controller: passwordController,
-                            obscuringCharacter: '*',
-                            obscureText: true,
-                            decoration: InputDecoration(
-                              prefixIcon: Icon(Icons.vpn_key),
-                              focusColor: Colors.black,
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.black),
-                                borderRadius: BorderRadius.circular(10)
-                              )
-                            )
-                          ),
-                          SizedBox(height: 20),
-                          Row(
-                            children: <Widget>[
-                              Text('Verify Password'),
-                            ]
-                          ),
-                          TextFormField(
-                            controller: verifyPasswordController,
-                            obscuringCharacter: '*',
-                            obscureText: true,
-                            decoration: InputDecoration(
-                              prefixIcon: Icon(Icons.vpn_key),
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.black),
-                                borderRadius: BorderRadius.circular(10)
-                              )
-                            )
-                          ),
-                        ],
+                      Form(
+                        key: formKey,
+                        child: Column(
+                          children: <Widget>[
+                            TextFormField(
+                              controller: emailController,
+                              autovalidateMode: AutovalidateMode.always,
+                              keyboardType: TextInputType.emailAddress,
+                              decoration: InputDecoration(
+                                prefixIcon: Icon(Icons.email_rounded),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10)
+                                )
+                              ),
+                              validator: (value) {
+                                return value.isEmpty ? 'Email is missing.' : 
+                                  null;
+                              },
+                              onSaved: (value) {
+                                emailController.text = value;
+                              }
+                            ),
+                            SizedBox(height: 20),
+                            TextFormField(
+                              controller: passwordController,
+                              obscuringCharacter: '*',
+                              obscureText: true,
+                              decoration: InputDecoration(
+                                prefixIcon: Icon(Icons.vpn_key),
+                                focusColor: Colors.black,
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.black),
+                                  borderRadius: BorderRadius.circular(10)
+                                )
+                              ),
+                              validator: (value) {
+                                return value.isEmpty ? 'Password is missing.':
+                                  null;
+                              },
+                              onSaved: (value) {
+                                passwordController.text = value;
+                              }
+                            ),
+                            // SizedBox(height: 20),
+                            // Row(
+                            //   children: <Widget>[
+                            //     Text('Verify Password'),
+                            //   ]
+                            // ),
+                            // TextFormField(
+                            //   controller: verifyPasswordController,
+                            //   autovalidateMode: AutovalidateMode.always,
+                            //   obscuringCharacter: '*',
+                            //   obscureText: true,
+                            //   decoration: InputDecoration(
+                            //     prefixIcon: Icon(Icons.vpn_key),
+                            //     border: OutlineInputBorder(
+                            //       borderSide: BorderSide(color: Colors.black),
+                            //       borderRadius: BorderRadius.circular(10)
+                            //     )
+                            //   ),
+                            //   validator: (value) {
+                            //     return verifyPasswordController.text == 
+                            //     passwordController.text ? 
+                            //     'Mismatch password!' : null;
+                            //   },
+                            //   onSaved: (value) {
+                            //     verifyPasswordController.text = value;
+                            //   }
+                            // ),
+                          ],
+                        ),
                       ),
                               
                       // SignUp, SignIn button section
@@ -139,7 +205,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                                   )
                                 )
                               ),
-                              onPressed: () {}
+                              onPressed: validateAndSubmit,
                             ),
                           ]
                         )
