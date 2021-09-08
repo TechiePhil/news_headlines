@@ -11,6 +11,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
   final formKey = GlobalKey<FormState>();
   TextEditingController emailController;
   TextEditingController passwordController;
+  bool _isLoading = true;
   
   @override
   void initState() {
@@ -29,24 +30,60 @@ class _SignUpWidgetState extends State<SignUpWidget> {
   }
   
   void validateAndSubmit() async {
+    setState(() { _isLoading = true;});
     if (validateAndSave()) {
+      if (_isLoading) {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return Center(
+              child: SimpleDialog(
+                title: Text('Loading...'),
+                children: <Widget>[
+                  Center(child: CircularProgressIndicator()),
+                  Text(
+                    'Checking credentials, please wait.'
+                  )
+                ]
+              )
+            );
+          }
+        );
+      }
+      
       try {
         UserCredential user = await FirebaseAuth
-          .instance.createUserWithEmailAndPassword(
+          .instance.signInWithEmailAndPassword(
             email: emailController.text, 
             password: passwordController.text
-        );
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) {
-              return UserHome();
-            }
-          )
-        );
+        ).whenComplete(() {
+          setState(() {
+            _isLoading = false;
+            formKey.currentState.reset();
+          });
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                return UserHome();
+              }
+            )
+          );
+        });
       }
       catch(error) {
         print('Error: $error');
+        showDialog(
+          context: context, 
+          builder: (context) {
+            return AlertDialog(
+              title: Text('Error!'),
+              content: Text(
+                'Login Failed with error: $error'
+              )
+            );
+          }
+        );
       }
     }
   }
@@ -60,12 +97,12 @@ class _SignUpWidgetState extends State<SignUpWidget> {
             Container(
               height: 120,
               width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(
-                color: Colors.blueAccent,
-                // borderRadius: BorderRadius.vertical(
-                //   bottom: Radius.circular(5)
-                // )
-              ),
+              // decoration: BoxDecoration(
+              //   color: Colors.blueAccent,
+              //   // borderRadius: BorderRadius.vertical(
+              //   //   bottom: Radius.circular(5)
+              //   // )
+              // ),
               child: Padding(
                 padding: const EdgeInsets.all(15),
                 child: Column(
@@ -96,10 +133,10 @@ class _SignUpWidgetState extends State<SignUpWidget> {
               padding: EdgeInsets.symmetric(horizontal: 10),
               child: Container(
                 height: 350,
-                decoration: BoxDecoration(
-                  color: Colors.blue,
-                  borderRadius: BorderRadius.all(Radius.circular(10))
-                ),
+                // decoration: BoxDecoration(
+                //   color: Colors.blue,
+                //   borderRadius: BorderRadius.all(Radius.circular(10))
+                // ),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
@@ -156,33 +193,6 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                                 passwordController.text = value;
                               }
                             ),
-                            // SizedBox(height: 20),
-                            // Row(
-                            //   children: <Widget>[
-                            //     Text('Verify Password'),
-                            //   ]
-                            // ),
-                            // TextFormField(
-                            //   controller: verifyPasswordController,
-                            //   autovalidateMode: AutovalidateMode.always,
-                            //   obscuringCharacter: '*',
-                            //   obscureText: true,
-                            //   decoration: InputDecoration(
-                            //     prefixIcon: Icon(Icons.vpn_key),
-                            //     border: OutlineInputBorder(
-                            //       borderSide: BorderSide(color: Colors.black),
-                            //       borderRadius: BorderRadius.circular(10)
-                            //     )
-                            //   ),
-                            //   validator: (value) {
-                            //     return verifyPasswordController.text == 
-                            //     passwordController.text ? 
-                            //     'Mismatch password!' : null;
-                            //   },
-                            //   onSaved: (value) {
-                            //     verifyPasswordController.text = value;
-                            //   }
-                            // ),
                           ],
                         ),
                       ),
@@ -196,9 +206,9 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                             TextButton(
                               child: Text('Sign Up'),
                               style: ButtonStyle(
-                                backgroundColor: MaterialStateProperty.all(
-                                  Colors.greenAccent
-                                ),
+                                // backgroundColor: MaterialStateProperty.all(
+                                //   Colors.greenAccent
+                                // ),
                                 shape: MaterialStateProperty.all(
                                   StadiumBorder(
                                     side: BorderSide.none

@@ -10,20 +10,48 @@ class ArticleDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: ListView(
-          children: <Widget>[
-            Expanded(
-              child: Text(
-                article.description?? '- no description! -'.toUpperCase(),
-                // maxLines: 30,
-                // softWrap: true,
-                // overflow: TextOverflow.clip,
+      body: Container(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Column(
+            children: [
+              Center(
+                child: Container(
+                  height: 300,
+                  child: getNetworkImage(article.imageUrl),
+                ),
+              ),
+              SingleChildScrollView(
+                child: Container(
+                  child: Text(
+                    article.content?? 'Sorry, nothing to show.',
+                    textAlign: TextAlign.justify,
+                    softWrap: true,
+                    overflow: TextOverflow.visible,
+                    style: TextStyle(
+                      fontSize: 25,
+                    )
+                  )
+                )
               )
-            )
-          ]
-        )
-      )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+  
+  // get then image from the network and display it. if image url is null,
+  // show image placeholder.
+  Widget getNetworkImage(String url) {
+    if (url != null) {
+      return Image.network(url, scale: 2);
+    }
+    return Container(
+      child: Icon(
+        Icons.image_not_supported, 
+        size: 200,
+        color: Colors.blueGrey[200])
     );
   }
 }

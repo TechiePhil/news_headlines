@@ -128,9 +128,10 @@ class _UserHomeState extends State<UserHome> {
         }
       ),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.cloud_download),
+        child: Icon(Icons.refresh_rounded),
         onPressed: () {
           newsHeadlines = Network.fetchData(url);
+          setState(() {});
           // newsHeadlines.then((headlines) {
           //   // print('Total Articles Retrieved: ${headlines.totalResults}');
           //   headlines.articles.forEach((article) {
