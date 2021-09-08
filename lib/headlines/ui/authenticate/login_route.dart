@@ -202,8 +202,8 @@ class _SignInWidgetState extends State<SignInWidget> {
                             ElevatedButton(
                               child: Text('Login', 
                                 style: TextStyle(
-                                  fontSize: 25,
-                                  color: Colors.blue
+                                  // fontSize: 25,
+                                  // color: Colors.blue
                                 )
                               ),
                               style: ButtonStyle(

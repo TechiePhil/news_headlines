@@ -44,7 +44,7 @@ with SingleTickerProviderStateMixin {
       ),
       bottomNavigationBar: TabBar(
         controller: tabController,
-        labelColor: Colors.black54,
+        labelColor: Colors.blue,
         unselectedLabelColor: Colors.black38,
         tabs: <Widget>[
           Tab(

@@ -203,7 +203,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: <Widget>[
-                            TextButton(
+                            ElevatedButton(
                               child: Text('Sign Up'),
                               style: ButtonStyle(
                                 // backgroundColor: MaterialStateProperty.all(
