@@ -35,7 +35,9 @@ class _SignInWidgetState extends State<SignInWidget> {
                 contentPadding: EdgeInsets.all(10),
                 title: Center(child: Text('Loading...',)),
                 children: <Widget>[
+                  SizedBox(height: 5),
                   Center(child: CircularProgressIndicator()),
+                  SizedBox(height: 5),
                   Center(
                     child: Text(
                       'Checking credentials, please wait.',
@@ -165,9 +167,6 @@ class _SignInWidgetState extends State<SignInWidget> {
                               keyboardType: TextInputType.emailAddress,
                               decoration: InputDecoration(
                                 prefixIcon: Icon(Icons.email_rounded),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10)
-                                )
                               ),
                               validator: (value) {
                                 return value.isEmpty ? 'Email address is missing.' :
@@ -184,11 +183,6 @@ class _SignInWidgetState extends State<SignInWidget> {
                               obscureText: true,
                               decoration: InputDecoration(
                                 prefixIcon: Icon(Icons.vpn_key),
-                                focusColor: Colors.black,
-                                border: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.black),
-                                  borderRadius: BorderRadius.circular(10)
-                                )
                               ),
                               validator: (value) {
                                 return value.isEmpty ? 'Password is missing.' :
@@ -201,23 +195,23 @@ class _SignInWidgetState extends State<SignInWidget> {
                             SizedBox(height: 10),
                             ElevatedButton(
                               child: Text('Login', 
-                                style: TextStyle(
-                                  // fontSize: 25,
-                                  // color: Colors.blue
-                                )
-                              ),
-                              style: ButtonStyle(
-                                // backgroundColor: MaterialStateProperty.all(
-                                //   Colors.white
-                                // ),
-                                shape: MaterialStateProperty.all(
-                                  StadiumBorder(
-                                    side: BorderSide.none
-                                  )
-                                ),
-                                padding: MaterialStateProperty.all(
-                                  EdgeInsets.all(10)
-                                )
+                              //   style: TextStyle(
+                              //     // fontSize: 25,
+                              //     // color: Colors.blue
+                              //   )
+                              // ),
+                              // style: ButtonStyle(
+                              //   // backgroundColor: MaterialStateProperty.all(
+                              //   //   Colors.white
+                              //   // ),
+                              //   shape: MaterialStateProperty.all(
+                              //     StadiumBorder(
+                              //       side: BorderSide.none
+                              //     )
+                              //   ),
+                              //   padding: MaterialStateProperty.all(
+                              //     EdgeInsets.all(10)
+                              //   )
                               ),
                               onPressed: validateAndSubmit,
                             ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-
 import 'headlines/ui/authenticate/authenticate.dart';
+import 'headlines/ui/themes/ui_theme.dart';
 // import 'headlines/ui/home/headlines_page.dart';
 
 void main() async {
@@ -16,9 +16,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-        brightness: Brightness.dark
-      ),
+      theme: mainTheme,
       home: Authentication(),
     );
   }

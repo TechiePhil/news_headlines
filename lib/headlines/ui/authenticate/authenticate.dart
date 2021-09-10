@@ -43,9 +43,8 @@ with SingleTickerProviderStateMixin {
         ]
       ),
       bottomNavigationBar: TabBar(
+        indicatorColor: Theme.of(context).backgroundColor,
         controller: tabController,
-        labelColor: Colors.blue,
-        unselectedLabelColor: Colors.black38,
         tabs: <Widget>[
           Tab(
             text: 'Login',

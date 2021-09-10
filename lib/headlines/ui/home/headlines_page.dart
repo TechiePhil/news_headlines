@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:headlines/headlines/model/news_headlines.dart';
 import 'package:headlines/headlines/network/network.dart';
-
 import 'article_details_page.dart';
 
 class UserHome extends StatefulWidget {
@@ -31,6 +31,7 @@ class _UserHomeState extends State<UserHome> {
     return Scaffold(
       appBar: AppBar(
         title: Text('News Headlines'),
+        leading: Container(), // a dummy widget to remove the back arrow button
       ),
       body: FutureBuilder(
         future: newsHeadlines,
@@ -41,8 +42,8 @@ class _UserHomeState extends State<UserHome> {
           return ListView.builder(
             itemCount: snapshot.data.articles.length,
             itemBuilder: (context, index) {              
-              var articleAuthor = snapshot.data.articles[index].author?? 'N/A';
-              var publishDate = snapshot.data.articles[index].pubDate?? 'N/A';
+              var articleAuthor = snapshot.data.articles[index].author ?? 'N/A';
+              var publishDate = snapshot.data.articles[index].pubDate ?? 'N/A';
               return InkWell(
                 child: Card(
                   child: Container(
@@ -81,7 +82,7 @@ class _UserHomeState extends State<UserHome> {
                                 Container(
                                   child: Expanded(
                                     child: Text(
-                                      snapshot.data.articles[index].description?? 
+                                      snapshot.data.articles[index].description ?? 
                                       '- No Description! -'.toUpperCase(),
                                       textAlign: TextAlign.justify,
                                       style: TextStyle(
